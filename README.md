@@ -1,2 +1,191 @@
-# app-ia
-app ia dhi
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Simulación App IA - Gestión de Solicitudes</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background: #1e88e5;
+      color: white;
+      padding: 15px;
+      text-align: center;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 800px;
+      margin: 20px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      color: #333;
+    }
+
+    input, textarea, select, button {
+      width: 100%;
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background: #1e88e5;
+      color: white;
+      cursor: pointer;
+      border: none;
+    }
+
+    button:hover {
+      background: #1565c0;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .card {
+      border: 1px solid #ddd;
+      padding: 15px;
+      margin-top: 15px;
+      border-radius: 8px;
+      background: #fafafa;
+    }
+
+    .status {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    .accepted {
+      color: green;
+    }
+
+    .rejected {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🚗 App de Gestión de Vehículos con IA</h1>
+</header>
+
+<div class="container">
+  <h2>Solicitud del Cliente</h2>
+
+  <form id="formulario">
+    <h3>Datos Personales</h3>
+    <input type="text" id="nombre" placeholder="Nombre completo" required>
+    <input type="email" id="email" placeholder="Correo electrónico" required>
+    <input type="tel" id="telefono" placeholder="Teléfono" required>
+
+    <h3>Datos del Vehículo</h3>
+    <input type="text" id="marca" placeholder="Marca" required>
+    <input type="text" id="modelo" placeholder="Modelo" required>
+    <input type="text" id="matricula" placeholder="Matrícula" required>
+
+    <h3>Tarea a realizar</h3>
+    <textarea id="tarea" placeholder="Describe el servicio solicitado..." required></textarea>
+
+    <button type="submit">Enviar Solicitud</button>
+  </form>
+
+  <div id="panelRevision" class="hidden">
+    <h2>Panel de Revisión (Encargado)</h2>
+    <div id="datosSolicitud" class="card"></div>
+
+    <button onclick="aceptarSolicitud()">Aceptar</button>
+    <button onclick="rechazarSolicitud()">Rechazar</button>
+  </div>
+
+  <div id="resultado" class="hidden">
+    <h2>Resultado</h2>
+    <p id="estado" class="status"></p>
+    <p id="detalle"></p>
+  </div>
+</div>
+
+<script>
+  let solicitud = {};
+
+  document.getElementById("formulario").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    solicitud = {
+      nombre: document.getElementById("nombre").value,
+      email: document.getElementById("email").value,
+      telefono: document.getElementById("telefono").value,
+      marca: document.getElementById("marca").value,
+      modelo: document.getElementById("modelo").value,
+      matricula: document.getElementById("matricula").value,
+      tarea: document.getElementById("tarea").value
+    };
+
+    mostrarRevision();
+  });
+
+  function mostrarRevision() {
+    document.getElementById("formulario").classList.add("hidden");
+    document.getElementById("panelRevision").classList.remove("hidden");
+
+    document.getElementById("datosSolicitud").innerHTML = `
+      <strong>Cliente:</strong> ${solicitud.nombre}<br>
+      <strong>Email:</strong> ${solicitud.email}<br>
+      <strong>Teléfono:</strong> ${solicitud.telefono}<br><br>
+      <strong>Vehículo:</strong> ${solicitud.marca} ${solicitud.modelo}<br>
+      <strong>Matrícula:</strong> ${solicitud.matricula}<br><br>
+      <strong>Servicio:</strong> ${solicitud.tarea}
+    `;
+  }
+
+  function aceptarSolicitud() {
+    document.getElementById("panelRevision").classList.add("hidden");
+    document.getElementById("resultado").classList.remove("hidden");
+
+    let fecha = generarFechaIA();
+
+    document.getElementById("estado").innerText = "✔ Solicitud ACEPTADA";
+    document.getElementById("estado").classList.add("accepted");
+
+    document.getElementById("detalle").innerText =
+      "🤖 El bot de IA ha asignado automáticamente la cita para: " + fecha;
+  }
+
+  function rechazarSolicitud() {
+    document.getElementById("panelRevision").classList.add("hidden");
+    document.getElementById("resultado").classList.remove("hidden");
+
+    document.getElementById("estado").innerText = "✖ Solicitud RECHAZADA";
+    document.getElementById("estado").classList.add("rejected");
+
+    document.getElementById("detalle").innerText =
+      "La solicitud no ha sido aprobada por el encargado.";
+  }
+
+  function generarFechaIA() {
+    let hoy = new Date();
+    let diasExtra = Math.floor(Math.random() * 5) + 1;
+    hoy.setDate(hoy.getDate() + diasExtra);
+
+    let horas = Math.floor(Math.random() * 8) + 9;
+    let minutos = Math.random() > 0.5 ? "00" : "30";
+
+    return hoy.toLocaleDateString() + " a las " + horas + ":" + minutos;
+  }
+</script>
+
+</body>
+</html>
